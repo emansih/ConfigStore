@@ -1,0 +1,28 @@
+version: "3"
+
+services:
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:latest
+    network_mode: host
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "8283:80/tcp"
+      - "8383:443/tcp"
+    # Yes, very secure. ( ͡° ͜ʖ ͡°)
+    environment:
+      WEBPASSWORD: 'hunter2'
+      ServerIP: '192.168.2.138'
+    volumes:
+       - './etc-pihole/:/etc/pihole/'
+       - './etc-dnsmasq.d/:/etc/dnsmasq.d/'
+    # We use Google's and OpenDNS's DNS on start. When system is fully setup, we will use unbound as our recursive dns
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    cap_add:
+      - NET_ADMIN
+    restart: unless-stopped
+
+
